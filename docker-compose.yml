@@ -1,12 +1,11 @@
-version: "3"
 services:
-  service.rss:
+  service.ttrss:
     image: wangqiru/ttrss:latest
     container_name: ttrss
     ports:
       - 181:80
     environment:
-      - SELF_URL_PATH=http://localhost:181/ # please change to your own domain
+      - SELF_URL_PATH=http://localhost:181 # please change to your own domain
       - DB_PASS=ttrss # use the same password defined in `database.postgres`
       - PUID=1000
       - PGID=1000
@@ -18,7 +17,15 @@ services:
       - database_only
     stdin_open: true
     tty: true
+    depends_on:
+      - database.postgres
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      start_period: 30s
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   service.mercury: # set Mercury Parser API endpoint to `service.mercury:3000` on TTRSS plugin setting page
     image: wangqiru/mercury-parser-api:latest
@@ -38,8 +45,7 @@ services:
     restart: always
 
   database.postgres:
-    image: postgres:13-alpine
-    container_name: postgres
+    image: postgres:16-alpine
     environment:
       - POSTGRES_PASSWORD=ttrss # feel free to change the password
     volumes:
@@ -47,6 +53,12 @@ services:
     networks:
       - database_only
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      start_period: 30s
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   # utility.watchtower:
   #   container_name: watchtower
@@ -57,6 +69,20 @@ services:
   #     - WATCHTOWER_CLEANUP=true
   #     - WATCHTOWER_POLL_INTERVAL=86400
   #   restart: always
+
+  # service.rsshub:
+  #   container_name: rsshub
+  #   image: diygod/rsshub:latest
+  #   environment:
+  #     NODE_ENV: production
+  #     DEBUG_INFO: false
+  #     LOGGER_LEVEL: error
+  #     NO_LOGFILES: true    
+  #   networks:
+  #     - service_only
+  #   expose:
+  #     - 3000
+  #   restart: unless-stopped
 
 volumes:
   feed-icons:
