@@ -3,7 +3,7 @@
 
 $confpath = '/var/www/config.php';
 
-// For configs, see https://git.tt-rss.org/fox/tt-rss/src/branch/master/classes/config.php
+// For configs, see https://gitlab.tt-rss.org/tt-rss/tt-rss/-/blob/master/classes/Config.php
 
 $config = array();
 
@@ -58,6 +58,10 @@ $config['SMTP_SECURE'] = env('SMTP_SECURE');
 $config['SMTP_SKIP_CERT_CHECKS'] = env('SMTP_SKIP_CERT_CHECKS');
 $config['SMTP_CA_FILE'] = env('SMTP_CA_FILE');
 $config['NGINX_XACCEL_PREFIX'] = env('NGINX_XACCEL_PREFIX');
+$config['AUTH_OIDC_NAME'] = env('AUTH_OIDC_NAME');
+$config['AUTH_OIDC_URL'] = env('AUTH_OIDC_URL');
+$config['AUTH_OIDC_CLIENT_ID'] = env('AUTH_OIDC_CLIENT_ID');
+$config['AUTH_OIDC_CLIENT_SECRET'] = env('AUTH_OIDC_CLIENT_SECRET');
 
 $config['LOG_SENT_MAIL'] = env_bool('LOG_SENT_MAIL');
 $config['AUTH_AUTO_CREATE'] = env_bool('AUTH_AUTO_CREATE');
@@ -68,6 +72,11 @@ $config['ENABLE_PLUGIN_INSTALLER'] = env_bool('ENABLE_PLUGIN_INSTALLER');
 $config['SINGLE_USER_MODE'] = env_bool('SINGLE_USER_MODE');
 $config['SIMPLE_UPDATE_MODE'] = env_bool('SIMPLE_UPDATE_MODE');
 $config['IMG_HASH_SQL_FUNCTION'] = env_bool('IMG_HASH_SQL_FUNCTION');
+$config['CACHE_S3_ENDPOINT'] = env_bool('CACHE_S3_ENDPOINT');
+$config['CACHE_S3_BUCKET'] = env_bool('CACHE_S3_BUCKET');
+$config['CACHE_S3_REGION'] = env_bool('CACHE_S3_REGION');
+$config['CACHE_S3_ACCESS_KEY'] = env_bool('CACHE_S3_ACCESS_KEY');
+$config['CACHE_S3_SECRET_KEY'] = env_bool('CACHE_S3_SECRET_KEY');
 
 // Wait for the db connection
 $i = 1;
@@ -153,7 +162,7 @@ function connectDatabase($create)
         $map = array('host' => 'HOST', 'port' => 'PORT' , 'dbname' =>'NAME');
         $dsn = 'pgsql:';
     }
-    
+
     foreach ($map as $d => $h) {
         if (getenv('DB_' . $h)!==null) {
             $dsn .= $d . '=' . getenv('DB_' . $h) . ';';

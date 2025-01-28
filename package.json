@@ -1,20 +1,27 @@
 {
   "name": "docker-ttrss-plugins",
   "version": "1.0.0",
-  "repository": "git@github.com:HenryQW/docker-ttrss-plugins.git",
-  "author": "Henry <hi@henry.wang>",
-  "license": "MIT",
   "private": true,
+  "repository": "git@github.com:HenryQW/docker-ttrss-plugins.git",
+  "license": "MIT",
+  "author": "Henry <hi@henry.wang>",
+  "type": "module",
   "scripts": {
-    "dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs",
+    "docker:build": "docker rm ttrss -f && docker compose -f docker-compose.dev.yml up -d --build && docker logs ttrss -f",
+    "docker:build:down": "docker compose -f docker-compose.dev.yml down",
+    "docker:dev": "docker rm ttrss -f && docker compose -f docker-compose.yml up -d && docker logs ttrss -f",
+    "docker:dev:down": "docker compose -f docker-compose.yml down",
+    "docs:build": "vitepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:preview": "vitepress preview docs",
     "format": "prettier \"**/*.{js,json,md}\" --write",
-    "docker:dev": "docker rm ttrss -f && docker-compose -f docker-compose.yml up -d && docker logs ttrss -f",
-    "docker:build": "docker rm ttrss -f && docker-compose -f docker-compose.dev.yml up -d --build && docker logs ttrss -f"
+    "textlint": "textlint \"**/*.md\"",
+    "textlint:fix": "textlint \"**/*.md\" --fix"
   },
   "devDependencies": {
-    "@vuepress/plugin-back-to-top": "1.9.7",
-    "@vuepress/plugin-google-analytics": "1.9.7",
-    "vuepress": "1.9.7"
+    "textlint": "14.4.2",
+    "textlint-rule-en-capitalization": "2.0.3",
+    "textlint-rule-ja-space-between-half-and-full-width": "2.4.2",
+    "vitepress": "1.6.3"
   }
 }
